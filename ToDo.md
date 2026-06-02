@@ -61,10 +61,10 @@ synthetic (random point cloud) multi-GPU smoke test exercises the pointnet2/knn
 custom CUDA ops under each parallel mode. (See PLAN-graspnet.md / GitHub #4.)
 
 ### Tasks
-- [ ] Append `.gitignore` rules (graspnet/, runs/, data/, *.tar)
-- [ ] Clone fork `H-Freax/GraspNet_Pointnet2_PyTorch1.13.1` into `graspnet/`
-- [ ] Create dedicated conda env `graspnet` (Python 3.8, torch 1.13.1+cu117)
-- [ ] Build `pointnet2` and `knn` extensions (CUDA 11.8, sm_86, MAX_JOBS=4)
-- [ ] Verify: `sm_86` in arch list, extensions import, tiny single-GPU forward
-- [ ] Multi-GPU smoke test on synthetic data: DataParallel vs DDP -> decide mode
-- [ ] Report results and the chosen multi-GPU mode
+- [x] Append `.gitignore` rules (graspnet/, runs/, data/, *.tar)
+- [x] Clone fork `H-Freax/GraspNet_Pointnet2_PyTorch1.13.1` into `graspnet/`
+- [x] Create dedicated conda env `graspnet` (Python 3.8, torch 1.13.1+cu117)
+- [x] Build `pointnet2` and `knn` extensions (CUDA 11.8, sm_86, MAX_JOBS=4)
+- [x] Verify: `sm_86` in arch list, extensions import, tiny single-GPU forward
+- [x] Multi-GPU smoke test on synthetic data: DataParallel and DDP both PASS
+- [x] Report results -> recommend DDP (both work; DDP is the robust choice)
