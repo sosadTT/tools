@@ -26,3 +26,22 @@ this one follows the full §4/§12 flow (issue -> branch -> PR).
 - [x] Register GitHub issue #1 (closes #1)
 - [x] Create the genesis commit on `main` (31abb9d)
 - [x] Create a private GitHub repository and push
+
+## 2. Share GraspNet training plan for administrator review
+
+### Background
+The real task is to set up TRAINING-ONLY of graspnet/graspnet-baseline in this
+container, with strict guarantees that it never harms the host or other
+containers (no resource isolation exists; the disk is shared and tight). Before
+any resource-consuming action, the administrator must review and approve the
+plan. This task only shares the plan via the repository (a PR is the review
+surface). No GraspNet setup/build/download/training is performed here.
+
+### Tasks
+- [x] Create `docs/PLAN-graspnet.md` (English plan for review)
+- [x] Create branch `docs/graspnet-plan-review`
+- [x] Register GitHub issue for plan review (#2)
+- [x] Open a PR so the administrator can review (#3)
+- [x] Invite the administrator (coport-uni, write) as a collaborator
+      (invitation pending acceptance; reviewer request can be added once
+      accepted)
