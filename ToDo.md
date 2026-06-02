@@ -18,11 +18,11 @@ because no branch can be cut before the repository exists. Every task after
 this one follows the full §4/§12 flow (issue -> branch -> PR).
 
 ### Tasks
-- [ ] Configure git identity (sosadTT / sy000217@gmail.com)
-- [ ] Initialize repository on `main` (`git init -b main`)
-- [ ] Add `.gitignore` based on the §13.1 Python template, excluding
+- [x] Configure git identity (sosadTT / sy000217@gmail.com)
+- [x] Initialize repository on `main` (`git init -b main`)
+- [x] Add `.gitignore` based on the §13.1 Python template, excluding
       `CommonClaude/`
-- [ ] Create this `ToDo.md`
-- [ ] Register GitHub issue #1
-- [ ] Create the genesis commit on `main`
-- [ ] Create a private GitHub repository and push
+- [x] Create this `ToDo.md`
+- [x] Register GitHub issue #1 (closes #1)
+- [x] Create the genesis commit on `main` (31abb9d)
+- [x] Create a private GitHub repository and push
