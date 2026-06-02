@@ -625,3 +625,42 @@ Checks and formatting will now run automatically on `git commit`.
 |---|---|
 | Tim Pope, "A Note About Git Commit Messages" | https://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html |
 | Chris Beams, "How to Write a Git Commit Message" | https://cbea.ms/git-commit/ |
+
+---
+
+## 18. Guarded Operations (approval required, even in auto mode)
+
+Some operations can disrupt running services on the shared host. The following
+are **guarded**: before executing them — or any command equivalent to them —
+you **must warn the user and obtain explicit approval first**, **even in
+auto/bypass mode**. Never run them silently.
+
+### Guarded operations
+
+1. **`pkill -f unicorn`** (and equivalents that kill (g)unicorn workers, e.g.
+   `pkill -f gunicorn`, `kill` of unicorn PIDs). This can take down a running
+   application server.
+2. **Changing nginx `worker_processes` from `auto` to a manual count** (e.g.,
+   `2`), by editing `nginx.conf` (any tool) or via shell, including the
+   subsequent `nginx -s reload`.
+
+### Required procedure
+
+1. **Stop** before running the operation.
+2. **Warn** the user: state exactly what will run, why, and the impact on
+   running services.
+3. **Wait for explicit approval.** Approval in one context does not extend to
+   the next occurrence — ask each time.
+4. Only after approval, proceed. The enforcement hook
+   (`.claude/hooks/pre-guarded-ops.sh`) blocks these commands; to run an
+   approved command, prefix it with `GUARDED_OPS_ACK=1`. **The
+   `GUARDED_OPS_ACK=1` marker may be added ONLY after the user has explicitly
+   approved that specific operation.** Do not add it pre-emptively.
+
+### Enforcement
+
+A `PreToolUse` Bash hook (`pre-guarded-ops.sh`, wired in
+`.claude/settings.json`) detects these commands and blocks them (exit 2) with a
+warning unless the acknowledgement marker is present. Because `PreToolUse`
+hooks run even under bypass/auto permissions, this enforces the rule when the
+model would otherwise proceed automatically.
