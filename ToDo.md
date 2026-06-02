@@ -68,3 +68,26 @@ custom CUDA ops under each parallel mode. (See PLAN-graspnet.md / GitHub #4.)
 - [x] Verify: `sm_86` in arch list, extensions import, tiny single-GPU forward
 - [x] Multi-GPU smoke test on synthetic data: DataParallel and DDP both PASS
 - [x] Report results -> recommend DDP (both work; DDP is the robust choice)
+
+## 4. Dataset download doc + single-GPU training wrappers
+
+### Background
+Verified from the CVPR 2020 paper PDF: the baseline was trained on ONE Nvidia
+RTX 2080, batch_size 4, Adam lr 0.001 (->1e-4 @60ep, ->1e-5 @100ep). The
+official repo's released config differs (batch 2, 18 epochs). The user chose the
+paper-faithful setup: SINGLE-GPU, batch_size 4 (one RTX 3090 has ample headroom;
+no DDP needed). Next step is to prepare the dataset download procedure and the
+training wrappers so a run can start once the form-gated dataset is placed.
+
+### Tasks
+- [x] Write `docs/dataset_download.md` (form-gated download, minimal subset,
+      target `/workspace/data/graspnet`, disk budget, tolerance-label step)
+- [x] Write `docs/setup_env.md` (env recipe, build, import bootstrap, vendored
+      train.py)
+- [x] Write `scripts/preflight.py` (read-only GPU/disk/RAM safety check)
+- [x] Write `scripts/train_graspnet.sh` (single-GPU, batch 4, paper LR
+      schedule; modes scratch/finetune-official/finetune-custom; preflight +
+      disk monitor)
+- [x] Adapt a train entrypoint to the fork (vendored `graspnet/train.py`);
+      `--dry_run` builds model+optimizer without data (verified, params ~1.03M)
+- [ ] Commit + PR (stacks on #5)
