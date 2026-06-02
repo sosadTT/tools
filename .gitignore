@@ -1,6 +1,12 @@
 # ===== Claude rule source (kept locally for reference) =====
 CommonClaude/
 
+# ===== GraspNet training (large / generated / external) =====
+graspnet/
+runs/
+data/
+*.tar
+
 # ===== Python =====
 __pycache__/
 *.py[cod]
