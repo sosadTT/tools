@@ -90,4 +90,23 @@ training wrappers so a run can start once the form-gated dataset is placed.
       disk monitor)
 - [x] Adapt a train entrypoint to the fork (vendored `graspnet/train.py`);
       `--dry_run` builds model+optimizer without data (verified, params ~1.03M)
-- [ ] Commit + PR (stacks on #5)
+- [x] Commit + PR (#7, stacks on #5)
+
+## 5. Guarded operations: require approval even in auto mode
+
+### Background
+The user asked that two risky operations always warn and require explicit
+approval, even in auto/bypass mode:
+1. `pkill -f unicorn` (kills (g)unicorn workers),
+2. changing nginx `worker_processes` from `auto` to a manual count (e.g., 2).
+A documented rule alone is weak in headless mode, so we also add a PreToolUse
+hook (hooks still run under bypass mode) that blocks these commands unless an
+explicit ACK marker is present (added only after the user approves).
+
+### Tasks
+- [x] Add a CLAUDE.md section (§18) documenting the guarded operations + rule
+- [x] Add `.claude/hooks/pre-guarded-ops.sh` (PreToolUse Bash guard)
+- [x] Wire the hook into `.claude/settings.json`
+- [x] Test the hook: blocks pkill (g)unicorn + numeric worker_processes;
+      allows reads/reload/benign; allows with GUARDED_OPS_ACK=1
+- [ ] Commit + PR (stacks on #7)
