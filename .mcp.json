@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "serena": {
+      "command": "/root/.local/bin/serena",
+      "args": [
+        "start-mcp-server",
+        "--context",
+        "ide-assistant",
+        "--project",
+        "/workspace/tools"
+      ]
+    }
+  }
+}
