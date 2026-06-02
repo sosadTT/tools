@@ -45,3 +45,26 @@ surface). No GraspNet setup/build/download/training is performed here.
 - [x] Invite the administrator (coport-uni, write) as a collaborator
       (invitation pending acceptance; reviewer request can be added once
       accepted)
+
+## 3. GraspNet environment setup + multi-GPU (DDP) smoke test
+
+### Background
+Administrator approved the plan (PR #3 merged) with two changes: allow full GPU
+use (assuming no OOM) and report the paper's training GPU. The user triggered
+execution but asked to proceed step by step: decide DDP vs DataParallel by
+testing first, with only a short (~5-10 min) safe test.
+
+Pre-flight (read-only) confirmed: 392 GB free disk, all 3x RTX 3090 idle, no
+`graspnet` conda env yet. The GraspNet-1Billion dataset is form-gated and cannot
+be auto-downloaded, but the DDP-vs-DataParallel decision does not need it: a
+synthetic (random point cloud) multi-GPU smoke test exercises the pointnet2/knn
+custom CUDA ops under each parallel mode. (See PLAN-graspnet.md / GitHub #4.)
+
+### Tasks
+- [ ] Append `.gitignore` rules (graspnet/, runs/, data/, *.tar)
+- [ ] Clone fork `H-Freax/GraspNet_Pointnet2_PyTorch1.13.1` into `graspnet/`
+- [ ] Create dedicated conda env `graspnet` (Python 3.8, torch 1.13.1+cu117)
+- [ ] Build `pointnet2` and `knn` extensions (CUDA 11.8, sm_86, MAX_JOBS=4)
+- [ ] Verify: `sm_86` in arch list, extensions import, tiny single-GPU forward
+- [ ] Multi-GPU smoke test on synthetic data: DataParallel vs DDP -> decide mode
+- [ ] Report results and the chosen multi-GPU mode
