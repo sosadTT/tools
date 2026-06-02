@@ -38,8 +38,10 @@ plan. This task only shares the plan via the repository (a PR is the review
 surface). No GraspNet setup/build/download/training is performed here.
 
 ### Tasks
-- [ ] Create `docs/PLAN-graspnet.md` (English plan for review)
-- [ ] Create branch `docs/graspnet-plan-review`
-- [ ] Register GitHub issue for plan review
-- [ ] Open a PR so the administrator can review
-- [ ] Add the administrator as a collaborator and request review
+- [x] Create `docs/PLAN-graspnet.md` (English plan for review)
+- [x] Create branch `docs/graspnet-plan-review`
+- [x] Register GitHub issue for plan review (#2)
+- [x] Open a PR so the administrator can review (#3)
+- [x] Invite the administrator (coport-uni, write) as a collaborator
+      (invitation pending acceptance; reviewer request can be added once
+      accepted)
