@@ -149,4 +149,5 @@ drag-and-dropped zips are excluded from migration.
       collision_label all OK (no drag-and-drop corruption)
 - [x] Export conda env (`migration/environment.yml`, `requirements-lock.txt`)
 - [x] Write `migration/README.md` runbook (image + host artifacts + exclusions)
+- [x] Write `HANDOFF.md` (project-context handoff for another machine/session)
 - [x] Commit + PR (#13, stacks on #11)
