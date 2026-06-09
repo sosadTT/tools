@@ -33,6 +33,10 @@ NUM_WORKERS=2
 LOG_DIR=""
 CONDA_ENV="graspnet"
 ABORT_FLOOR_GB=80
+SCENES=""
+SKIP_EVAL=0
+MAX_ITERS=0
+ALLOW_BUSY=0
 
 REPO_ROOT="/workspace/tools"
 FORK_DIR="${REPO_ROOT}/graspnet"
@@ -52,6 +56,10 @@ while [[ $# -gt 0 ]]; do
         --learning_rate) LEARNING_RATE="$2"; shift 2 ;;
         --num_workers) NUM_WORKERS="$2"; shift 2 ;;
         --log_dir) LOG_DIR="$2"; shift 2 ;;
+        --scenes) SCENES="$2"; shift 2 ;;
+        --skip_eval) SKIP_EVAL=1; shift ;;
+        --max_iters) MAX_ITERS="$2"; shift 2 ;;
+        --allow_busy) ALLOW_BUSY=1; shift ;;
         *) echo "Unknown flag: $1" >&2; exit 2 ;;
     esac
 done
@@ -72,8 +80,9 @@ fi
 
 # ---- pre-flight safety gate ------------------------------------------
 echo ">> pre-flight check"
-python "${REPO_ROOT}/scripts/preflight.py" \
-    --gpu "$GPU" --abort-floor-gb "$ABORT_FLOOR_GB"
+PREFLIGHT_ARGS=(--gpu "$GPU" --abort-floor-gb "$ABORT_FLOOR_GB")
+[[ "$ALLOW_BUSY" == "1" ]] && PREFLIGHT_ARGS+=(--allow-busy)
+python "${REPO_ROOT}/scripts/preflight.py" "${PREFLIGHT_ARGS[@]}"
 
 # ---- conservative resource caps --------------------------------------
 export CUDA_VISIBLE_DEVICES="$GPU"
@@ -127,8 +136,13 @@ if [[ ! -f "$TRAIN_PY" ]]; then
     exit 2
 fi
 
+EXTRA_ARGS=()
+[[ -n "$SCENES" ]] && EXTRA_ARGS+=(--scenes "$SCENES")
+[[ "$SKIP_EVAL" == "1" ]] && EXTRA_ARGS+=(--skip_eval)
+[[ "$MAX_ITERS" != "0" ]] && EXTRA_ARGS+=(--max_iters "$MAX_ITERS")
+
 echo ">> launching: mode=$MODE camera=$CAMERA gpu=$GPU batch=$BATCH_SIZE"
-echo "   dataset_root=$DATASET_ROOT log_dir=$LOG_DIR"
+echo "   dataset_root=$DATASET_ROOT log_dir=$LOG_DIR scenes=${SCENES:-all}"
 
 conda run -n "$CONDA_ENV" --no-capture-output python "$TRAIN_PY" \
     --camera "$CAMERA" \
@@ -139,6 +153,7 @@ conda run -n "$CONDA_ENV" --no-capture-output python "$TRAIN_PY" \
     --max_epoch "$MAX_EPOCH" \
     --learning_rate "$LEARNING_RATE" \
     --num_workers "$NUM_WORKERS" \
+    "${EXTRA_ARGS[@]}" \
     "${CKPT_FLAG[@]}" &
 TRAIN_PID=$!
 

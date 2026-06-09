@@ -109,4 +109,26 @@ explicit ACK marker is present (added only after the user approves).
 - [x] Wire the hook into `.claude/settings.json`
 - [x] Test the hook: blocks pkill (g)unicorn + numeric worker_processes;
       allows reads/reload/benign; allows with GUARDED_OPS_ACK=1
-- [ ] Commit + PR (stacks on #7)
+- [x] Commit + PR (#9)
+
+## 6. Minimal-subset GraspNet training validation
+
+### Background
+User placed train_1.zip / grasp_label.zip / collision_label.zip in
+`/workspace/data/graspnet/`. Validate the paper-faithful single-GPU pipeline
+(batch 4) on a minimal subset: data load -> 1 step -> checkpoint, before full
+training. Read-only investigation found: loader assumes scenes 0000-0099 and a
+test split we lack (so restrict to train_1 scenes 0000-0029 + skip eval);
+`load_grasp_labels` needs tolerance labels (generate); and the fork's
+`graspnet_dataset.py` uses an undefined `BASE_DIR` (bugfix needed). All 3 GPUs
+are currently shared by other users, so the GPU is chosen at run time behind a
+preflight gate.
+
+### Tasks
+- [ ] Extract train_1 -> `scenes/`, grasp_label/, collision_label/
+- [ ] Generate tolerance labels (num_workers=4) into `graspnet/dataset/tolerance/`
+- [ ] Patch vendored: BASE_DIR fix + `scene_ids` arg + train.py
+      `--scenes/--skip_eval/--max_iters`
+- [ ] Enhance `scripts/preflight.py` (`--allow-busy`) + launcher passthrough
+- [ ] Preflight gate + run validation on a user-chosen GPU
+- [ ] Verify checkpoint + report; commit + PR (stacks on #9)

@@ -96,6 +96,11 @@ def main():
     )
     parser.add_argument("--disk-path", default="/workspace")
     parser.add_argument("--abort-floor-gb", type=float, default=abort_floor_gb)
+    parser.add_argument(
+        "--allow-busy",
+        action="store_true",
+        help="Treat an in-use GPU as a warning, not an abort (shared host).",
+    )
     args = parser.parse_args()
 
     problems = []
@@ -119,7 +124,11 @@ def main():
         if gpu is None:
             problems.append(f"GPU {index} not present")
         elif gpu["mem_used_mib"] > gpu_busy_mib:
-            problems.append(f"GPU {index} already in use ({gpu['mem_used_mib']} MiB)")
+            msg = f"GPU {index} already in use ({gpu['mem_used_mib']} MiB)"
+            if args.allow_busy:
+                print(f"  WARN: {msg} (shared use allowed)")
+            else:
+                problems.append(msg)
 
     free_gb = free_disk_gb(args.disk_path)
     print(f"\nFree disk on {args.disk_path}: {free_gb:.0f} GB")
