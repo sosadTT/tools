@@ -132,3 +132,22 @@ preflight gate.
 - [ ] Enhance `scripts/preflight.py` (`--allow-busy`) + launcher passthrough
 - [ ] Preflight gate + run validation on a user-chosen GPU
 - [ ] Verify checkpoint + report; commit + PR (stacks on #9)
+
+## 7. Docker migration kit + dataset integrity check
+
+### Background
+A GPU is likely occupied for a while, so the user wants to migrate to another
+machine for testing. Two parts: (1) integrity-check the dataset zips that were
+drag-and-dropped from the remote PC yesterday, and (2) prepare a Docker
+migration kit. docker is not available inside the container and `/workspace` is
+a host bind-mount (not captured by `docker commit`), so the kit covers both the
+env image and the host-side `/workspace` artifacts. The ~122 GB dataset and the
+drag-and-dropped zips are excluded from migration.
+
+### Tasks
+- [x] Integrity-check the 5 dataset zips (CRC test): train_1/2/4, grasp_label,
+      collision_label all OK (no drag-and-drop corruption)
+- [x] Export conda env (`migration/environment.yml`, `requirements-lock.txt`)
+- [x] Write `migration/README.md` runbook (image + host artifacts + exclusions)
+- [x] Write `HANDOFF.md` (project-context handoff for another machine/session)
+- [x] Commit + PR (#13, stacks on #11)
