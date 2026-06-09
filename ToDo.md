@@ -145,7 +145,8 @@ env image and the host-side `/workspace` artifacts. The ~122 GB dataset and the
 drag-and-dropped zips are excluded from migration.
 
 ### Tasks
-- [ ] Integrity-check the 5 dataset zips (CRC test) [background]
+- [x] Integrity-check the 5 dataset zips (CRC test): train_1/2/4, grasp_label,
+      collision_label all OK (no drag-and-drop corruption)
 - [x] Export conda env (`migration/environment.yml`, `requirements-lock.txt`)
 - [x] Write `migration/README.md` runbook (image + host artifacts + exclusions)
-- [ ] Commit + PR (stacks on #11)
+- [x] Commit + PR (#13, stacks on #11)
