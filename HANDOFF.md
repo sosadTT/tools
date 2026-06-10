@@ -45,9 +45,15 @@ guarded-ops, Stop check).
 ## 4. Data (status: integrity-verified)
 
 - Dataset root: `/workspace/data/graspnet/` (gitignored, NOT migrated — ~122 GB).
+- **Acquisition switched to the public HF mirror `saic3d/graspnet`** (verified
+  byte-identical to the official zips via sha256 vs HF LFS oids). Use
+  `scripts/download_dataset.sh` (disk gate + sha256 check + extract). No
+  streaming-capable distribution exists anywhere (all archive-only); the
+  loader reads per-scene files from disk.
 - Zips present and **all CRC-OK**: `train_1/2/4.zip`, `grasp_label.zip`,
-  `collision_label.zip`. `train_3.zip` is MISSING (scenes 0060-0089). No
-  `test_*` zips.
+  `collision_label.zip`; `train_3` fetched from the HF mirror (scenes
+  0060-0089). No `test_*` zips yet (fetch via the script when full training
+  starts).
 - Extracted so far: `scenes/scene_0000..0029` (realsense), `grasp_label/`,
   `collision_label/`.
 - **tolerance labels** generated: 88 `.npy` at
