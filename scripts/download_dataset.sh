@@ -19,6 +19,10 @@ set -euo pipefail
 REPO_ID="saic3d/graspnet"
 DATA_ROOT="/workspace/data/graspnet"
 CONDA_ENV="graspnet"
+# The huggingface_hub Python client (both xet and plain backends) stalled
+# indefinitely on this host, while direct HTTP to the resolve URL works at
+# full speed. So downloads use curl (resumable via -C -); integrity is
+# guaranteed by the sha256 check against the HF LFS oid below.
 FLOOR_GB=80
 FILES=""
 DO_EXTRACT=0
@@ -68,19 +72,10 @@ fi
 mkdir -p "$DATA_ROOT"
 
 for f in "${FILE_ARR[@]}"; do
-    echo ">> downloading $f from ${REPO_ID} (resumable)"
-    conda run -n "$CONDA_ENV" --no-capture-output python - "$f" <<'PY'
-import sys
-from huggingface_hub import hf_hub_download
-
-fname = sys.argv[1]
-path = hf_hub_download(
-    repo_id="saic3d/graspnet",
-    filename=fname,
-    local_dir="/workspace/data/graspnet",
-)
-print("downloaded:", path)
-PY
+    echo ">> downloading $f from ${REPO_ID} (curl, resumable)"
+    curl -L -C - --fail --retry 5 --retry-delay 10 \
+        -o "$DATA_ROOT/$f" \
+        "https://huggingface.co/${REPO_ID}/resolve/main/$f"
 
     echo ">> verifying sha256 of $f against the HF LFS oid"
     want=$(echo "$META_JSON" | python3 -c "
