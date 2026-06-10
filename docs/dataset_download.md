@@ -1,83 +1,85 @@
-# GraspNet-1Billion dataset download (manual)
+# GraspNet-1Billion dataset download
 
-This container does **not** download the dataset automatically: GraspNet-1Billion
-is gated behind a registration form at <https://graspnet.net/datasets.html>.
-Request access there, then download the files yourself and place them at the
-path below. This document is the procedure; the training wrappers expect the
-result.
+## Primary method: HuggingFace mirror (no form, scriptable)
+
+The public HF repo **`saic3d/graspnet`** mirrors the official zips —
+**verified byte-identical** to the official distribution (sha256 of our
+official `collision_label.zip` and `grasp_label.zip` matches the HF LFS oids
+exactly). No registration form, no gating.
+
+Use the wrapper (disk-floor gate + sha256 verification built in):
+
+```bash
+# download only what you need; extract into the loader layout; drop the zip
+scripts/download_dataset.sh --files train_3.zip --extract --rm-zip
+scripts/download_dataset.sh --files grasp_label.zip,collision_label.zip --extract
+```
+
+Notes:
+- Downloads are **resumable** (`huggingface_hub.hf_hub_download`).
+- The script refuses to start if free disk minus the projected peak
+  (download + extraction) would breach the 80 GB floor.
+- Each file's sha256 is checked against the HF LFS oid after download.
+- **Streaming training is not possible**: every known distribution of this
+  dataset (HF repos, Zenodo, OpenDataLab, Kaggle) is archive-only (zip/tar; no
+  parquet/webdataset), and the training loader reads per-scene PNG/.mat files
+  from disk. Surveyed 2026-06; the HF zip mirror + selective download is the
+  best available option.
+- The mirror is third-party (not the original authors); the sha256 check above
+  is why we trust it. If a file ever mismatches, stop and fall back to the
+  official source below.
+
+## Fallback: official graspnet.net (form-gated)
+
+Request access at <https://graspnet.net/datasets.html>, download from the
+Google Drive links, and place the files manually (the original flow).
 
 ## Target location (outside the git repo)
 
-Place the dataset at:
-
 ```
 /workspace/data/graspnet/
 ```
 
-This is intentionally **outside** `/workspace/tools` so it can never be added to
-git, and it is also listed in `.gitignore` defensively. The disk is shared with
-the host, so mind the budget below.
+Intentionally outside `/workspace/tools` so it can never be added to git (also
+in `.gitignore`). The disk is shared with the host — mind the budget below.
 
 ## Disk budget (shared disk — be conservative)
 
-The full dataset is ~152 GB; **do not download all of it here.** For
-paper-faithful single-camera training, download only what is needed:
-
 | Component | File | Size | Needed? |
 |-----------|------|------|---------|
-| Train images (split 1) | `train_1.zip` | ~20 GB | minimal subset |
-| Train images (splits 2-4) | `train_2..4.zip` | ~46 GB | full single-camera train |
-| 6-DoF grasp labels | `grasp_label.zip` | ~1.9 GB | required |
+| Train images | `train_1..4.zip` | ~68 GB | full 100-scene train |
+| 6-DoF grasp labels | `grasp_label.zip` | ~2 GB | required |
 | Collision labels | `collision_label.zip` | ~0.4 GB | required |
-| Object models | `models.zip` | ~4.3 GB | optional (collision/eval) |
-| Test images | `test_*.zip` | ~59 GB | NOT needed (training only) |
-| Rectangle labels | `rect_label.zip` | ~12.5 GB | NOT needed |
-| DexNet models | `dex_models` | ~8.9 GB | NOT needed |
+| Test (seen) | `test_seen.zip` | ~21 GB | only for per-epoch eval |
+| Object models | `models.zip` | ~4.6 GB | optional |
+| Rect labels / DexNet | `rect_labels`, `dex_models` | ~23 GB | NOT needed |
 
-Recommended phases:
-- **Pipeline validation**: `train_1.zip` + `grasp_label` + `collision_label`
-  (~22 GB). Enough to validate the data path and run a short test.
-- **Full single-camera (realsense) train**: `train_1..4.zip` + labels (~68 GB).
-
-Before downloading, check free space (`scripts/preflight.py` also does this):
-keep well above the `ABORT_FLOOR_GB=80` floor.
+Use `--rm-zip` to avoid double occupancy after extraction.
 
 ## Expected directory layout
 
-After extracting, the root must look like this (the loader expects these names):
-
 ```
 /workspace/data/graspnet/
-├── scenes/
-│   ├── scene_0000/
-│   │   ├── realsense/   # rgb/ depth/ label/ ...
-│   │   └── kinect/
-│   └── ...
-├── grasp_label/         # 0000_labels.npz ... 0087_labels.npz
-├── collision_label/     # scene-wise collision masks
-└── models/              # optional
+├── scenes/              # scene_0000 ... (train zips extract here)
+│   └── scene_XXXX/{realsense,kinect}/{rgb,depth,label,meta}/...
+├── grasp_label/         # 000_labels.npz ... 087_labels.npz
+└── collision_label/     # scene-wise collision masks
 ```
 
-## Tolerance labels (generated, not downloaded)
+## Tolerance labels (generated locally, not downloaded)
 
-The baseline needs per-grasp "tolerance" labels. Generate them once after the
-data is in place (run inside the `graspnet` conda env, from the fork's
-`dataset/` dir):
+Required by the loader; generated once from `grasp_label/` into
+`graspnet/dataset/tolerance/` (the loader reads them relative to the fork's
+`dataset/` dir — see `docs/setup_env.md`):
 
-```
+```bash
 cd /workspace/tools/graspnet/dataset
-python generate_tolerance_label.py --dataset_root /workspace/data/graspnet \
-    --camera realsense --num_workers 2
+conda run -n graspnet python generate_tolerance_label.py \
+    --dataset_root /workspace/data/graspnet --num_workers 32
 ```
-
-This writes `tolerance/` next to the labels. Keep `--num_workers` small (shared
-box). Alternatively the authors provide a `tolerance.tar` download; if used,
-extract it into the dataset root.
 
 ## After download — verify, then train
 
 1. Confirm the layout above exists at `/workspace/data/graspnet`.
-2. Run the pre-flight check: `python scripts/preflight.py --gpu 0`.
-3. Launch a short test run with `scripts/train_graspnet.sh` (see that script).
-
-No training starts until the data is present and the pre-flight passes.
+2. Run the pre-flight check: `python scripts/preflight.py --gpu <N>`.
+3. Launch via `scripts/train_graspnet.sh` (see that script).
