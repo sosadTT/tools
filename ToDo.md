@@ -168,11 +168,14 @@ verify once via sha256 before trusting it. Also fetch the missing train_3.zip
 (scenes 0060-0089; peak +41 GB on 377 GB free, floor 80 GB — safe).
 
 ### Tasks
-- [ ] Install huggingface_hub into the `graspnet` env
-- [ ] Verify mirror: sha256(HF collision_label.zip) == our official copy
-- [ ] Write `scripts/download_dataset.sh` (disk gate, selective, extract,
-      rm-zip)
-- [ ] Revise `docs/dataset_download.md` (HF primary, Drive fallback, no
-      streaming note) + HANDOFF.md one-liner
-- [ ] Download + extract train_3 -> scenes 0060-0089 (60 scenes total), verify
-- [ ] Commit + PR (stacks on #13)
+- [x] Install huggingface_hub into the `graspnet` env (0.36.2)
+- [x] Verify mirror: sha256 of our official collision_label.zip AND
+      grasp_label.zip exactly match the HF LFS oids (no download needed)
+- [x] Write `scripts/download_dataset.sh` (disk gate tested, sha256 verify,
+      extract, rm-zip; switched to curl because hf_hub client stalled on
+      this host while direct HTTP runs at full speed)
+- [x] Revise `docs/dataset_download.md` (HF primary, Drive fallback, no
+      streaming note) + HANDOFF.md update
+- [x] Download + extract train_3: sha256 OK (f86adcd0...), scenes 0060-0089
+      extracted -> 60 scenes total, zip removed, disk 349G (floor 80G)
+- [x] Commit + PR (#15, stacks on #13)
