@@ -43,10 +43,16 @@ before full training.
 
 ## Checkpoint
 
-The full 1-epoch run (1920 batches) saves `runs/scratch_realsense/checkpoint.tar`
-at epoch end; it is then verified with `torch.load`.
+The full 1-epoch run completed all **1920 batches** (exit code 0). Final
+training `overall_loss = 0.726` (down from 1.05 at batch 130). The checkpoint
+was saved and verified:
 
-<!-- checkpoint verification appended on completion -->
+- `runs/scratch_realsense/checkpoint.tar` — **12 MB**, `torch.load` OK.
+- Keys: `epoch`, `loss`, `model_state_dict` (162 tensors), `optimizer_state_dict`.
+- `epoch = 1`. (`loss = 0.0` only because `--skip_eval` skips the eval-loss
+  field; the training loss decreased normally as shown above.)
+- After the run, GPU 2 returned to ~3.8 GB (our process released cleanly); disk
+  held at 377 GB.
 
 ## Verdict
 

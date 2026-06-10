@@ -130,8 +130,10 @@ preflight gate.
 - [ ] Patch vendored: BASE_DIR fix + `scene_ids` arg + train.py
       `--scenes/--skip_eval/--max_iters`
 - [ ] Enhance `scripts/preflight.py` (`--allow-busy`) + launcher passthrough
-- [ ] Preflight gate + run validation on a user-chosen GPU
-- [ ] Verify checkpoint + report; commit + PR (stacks on #9)
+- [x] Preflight gate + run validation on GPU 2 (1 epoch, batch 4, scenes 0-29,
+      skip_eval): full 1920 batches, exit 0, loss 1.05->0.726, no OOM
+- [x] Verify checkpoint + report: checkpoint.tar 12 MB, torch.load OK (epoch 1,
+      162 tensors); documented in docs/graspnet-validation.md; commit + PR
 
 ## 7. Docker migration kit + dataset integrity check
 
