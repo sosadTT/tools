@@ -12,8 +12,8 @@
 #   scripts/download_dataset.sh --files train_3.zip[,grasp_label.zip,...]
 #       [--extract] [--rm-zip] [--floor-gb 80]
 # Layout on --extract (matches the training loader):
-#   train_N.zip  -> <root>/scenes/        (zips contain scene_XXXX/ at top)
-#   other zips   -> <root>/               (they contain their own top dir)
+#   train_N / test_*.zip -> <root>/scenes/  (contain scene_XXXX/ at top)
+#   other zips           -> <root>/         (contain their own top dir)
 set -euo pipefail
 
 REPO_ID="saic3d/graspnet"
@@ -90,7 +90,7 @@ print(d.get('$f') or '')")
     echo "   sha256 OK: $got"
 
     if [[ "$DO_EXTRACT" == "1" ]]; then
-        if [[ "$f" == train_*.zip ]]; then
+        if [[ "$f" == train_*.zip || "$f" == test_*.zip ]]; then
             dest="$DATA_ROOT/scenes"
         else
             dest="$DATA_ROOT"
