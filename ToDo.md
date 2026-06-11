@@ -214,3 +214,19 @@ remains HELD pending manager approval.
       data scale, GPU, VRAM evidence, external sources, time estimate)
 - [x] `bash -n` + run once: 0.504 batch/s, 6400 batch/epoch, ~3.4d@nw2 confirmed
 - [x] Commit + PR (stacks on #17)
+
+## 11. Full scratch training (18 epoch, 100 scenes) in tmux
+
+### Background
+User authorized the run. Paper-faithful: single GPU, batch 4, 18 epochs, lr
+0.001 decay @8/12/16 (official repo), num_workers 8, 100 train scenes +
+per-epoch test_seen eval. Runs in a tmux session (persistent, user-attachable).
+GPU gate: GPU 0 unsafe at ~15G VRAM; use GPU 1 or 2 (2 chosen, as in validation).
+Logs to runs/full_scratch_realsense (log_train.txt + tensorboard); auto-resume
+via checkpoint. Only tracked change: launcher lr_decay passthrough.
+
+### Tasks
+- [x] Add `--lr_decay_steps/--lr_decay_rates` passthrough to launcher (bash -n)
+- [ ] Install tmux; preflight gate report; launch on GPU 2 in tmux
+- [ ] Confirm started (log/GPU); report attach instructions + ETA
+- [ ] Commit launcher change + PR (stacks on #19)
