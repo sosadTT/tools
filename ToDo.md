@@ -179,3 +179,21 @@ verify once via sha256 before trusting it. Also fetch the missing train_3.zip
 - [x] Download + extract train_3: sha256 OK (f86adcd0...), scenes 0060-0089
       extracted -> 60 scenes total, zip removed, disk 349G (floor 80G)
 - [x] Commit + PR (#15, stacks on #13)
+
+## 9. Complete full-training dataset (train_2/4 + test_seen)
+
+### Background
+60 scenes present (0000-0029, 0060-0089). To be ready for full GraspNet
+training, extract the remaining held train splits and fetch the per-epoch eval
+split, staying well above the 80 GB disk floor (347 GB free). train_2/4 zips are
+already on disk (drag-and-dropped, CRC-OK) — extract only, do not delete.
+test_seen comes from the HF mirror. test_novel/similar and models/dex/rect are
+not needed for training and are skipped. Fixed download_dataset.sh so test_*.zip
+extracts into scenes/ like train zips.
+
+### Tasks
+- [ ] Fix download_dataset.sh: test_*.zip -> scenes/
+- [ ] Extract train_2 (0030-0059) + train_4 (0090-0099) -> 100 train scenes
+- [ ] Download + extract test_seen (0100-0129) via the script (--rm-zip)
+- [ ] Verify 130 scenes + structure spot check; disk above floor
+- [ ] Commit + PR (stacks on #15)
