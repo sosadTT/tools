@@ -192,8 +192,9 @@ not needed for training and are skipped. Fixed download_dataset.sh so test_*.zip
 extracts into scenes/ like train zips.
 
 ### Tasks
-- [ ] Fix download_dataset.sh: test_*.zip -> scenes/
-- [ ] Extract train_2 (0030-0059) + train_4 (0090-0099) -> 100 train scenes
-- [ ] Download + extract test_seen (0100-0129) via the script (--rm-zip)
-- [ ] Verify 130 scenes + structure spot check; disk above floor
-- [ ] Commit + PR (stacks on #15)
+- [x] Fix download_dataset.sh: test_*.zip -> scenes/
+- [x] Extract train_2 (0030-0059) + train_4 (0090-0099) -> 100 train scenes
+- [x] Download + extract test_seen (0100-0129) via the script (sha256 OK
+      bba24fce..., --rm-zip)
+- [x] Verify 130 scenes (train 100 + test_seen 30); spot-check OK; disk 298G
+- [x] Commit + PR (stacks on #15)
