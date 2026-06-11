@@ -198,3 +198,19 @@ extracts into scenes/ like train zips.
       bba24fce..., --rm-zip)
 - [x] Verify 130 scenes (train 100 + test_seen 30); spot-check OK; disk 298G
 - [x] Commit + PR (stacks on #15)
+
+## 10. Training-spec verification script (read-only)
+
+### Background
+User wants to independently verify (and show their manager) the reported
+training details. Add a read-only script that prints the source + measured
+value for each. While gathering evidence, two reported numbers were corrected:
+VRAM ~8G -> ~15G (training, not inference), and total time ~4.5d -> ~3d at
+num_workers=2 / ~1.5-2d at 8 (measured 0.504 batch/s). Full scratch training
+remains HELD pending manager approval.
+
+### Tasks
+- [x] Write `scripts/verify_training_specs.sh` (read-only; config, speed,
+      data scale, GPU, VRAM evidence, external sources, time estimate)
+- [x] `bash -n` + run once: 0.504 batch/s, 6400 batch/epoch, ~3.4d@nw2 confirmed
+- [x] Commit + PR (stacks on #17)
