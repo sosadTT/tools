@@ -37,6 +37,8 @@ SCENES=""
 SKIP_EVAL=0
 MAX_ITERS=0
 ALLOW_BUSY=0
+LR_DECAY_STEPS=""
+LR_DECAY_RATES=""
 
 REPO_ROOT="/workspace/tools"
 FORK_DIR="${REPO_ROOT}/graspnet"
@@ -60,6 +62,8 @@ while [[ $# -gt 0 ]]; do
         --skip_eval) SKIP_EVAL=1; shift ;;
         --max_iters) MAX_ITERS="$2"; shift 2 ;;
         --allow_busy) ALLOW_BUSY=1; shift ;;
+        --lr_decay_steps) LR_DECAY_STEPS="$2"; shift 2 ;;
+        --lr_decay_rates) LR_DECAY_RATES="$2"; shift 2 ;;
         *) echo "Unknown flag: $1" >&2; exit 2 ;;
     esac
 done
@@ -140,6 +144,8 @@ EXTRA_ARGS=()
 [[ -n "$SCENES" ]] && EXTRA_ARGS+=(--scenes "$SCENES")
 [[ "$SKIP_EVAL" == "1" ]] && EXTRA_ARGS+=(--skip_eval)
 [[ "$MAX_ITERS" != "0" ]] && EXTRA_ARGS+=(--max_iters "$MAX_ITERS")
+[[ -n "$LR_DECAY_STEPS" ]] && EXTRA_ARGS+=(--lr_decay_steps "$LR_DECAY_STEPS")
+[[ -n "$LR_DECAY_RATES" ]] && EXTRA_ARGS+=(--lr_decay_rates "$LR_DECAY_RATES")
 
 echo ">> launching: mode=$MODE camera=$CAMERA gpu=$GPU batch=$BATCH_SIZE"
 echo "   dataset_root=$DATASET_ROOT log_dir=$LOG_DIR scenes=${SCENES:-all}"
