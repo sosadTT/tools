@@ -246,3 +246,17 @@ TensorBoard tfevents (train/ and test/) so it can be exported/reported.
 - [x] Generate `runs/full_scratch_realsense/training_curve.png` (gitignored):
       train overall 2.67->0.48, eval(test_seen) 0.62->0.54, both converge
 - [x] Commit + PR (stacks on #21)
+
+## 13. Deployment + test plan (robot/sim)
+
+### Background
+User will take the trained checkpoint to a robot-connected PC or sim PC and test
+grasping with PGC-140-50. Wrote a deploy/test plan grounded in the fork's
+inference code (GraspNetBaseLine, pred_decode, GraspGroup, collision detector,
+GRASP_MAX_WIDTH=0.075): what to transfer, target env (rebuild extensions for
+target GPU + open3d/graspnetAPI), inference pipeline, width filter (<=0.050),
+sim vs real, success criteria, official-checkpoint comparison.
+
+### Tasks
+- [x] Write `docs/deploy_test_plan.md` (grounded in graspnet_baseline.py)
+- [x] Commit + PR (stacks on #23)
