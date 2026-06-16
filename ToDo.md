@@ -260,3 +260,22 @@ sim vs real, success criteria, official-checkpoint comparison.
 ### Tasks
 - [x] Write `docs/deploy_test_plan.md` (grounded in graspnet_baseline.py)
 - [x] Commit + PR (stacks on #23)
+
+## 14. Replay training curves to wandb
+
+### Background
+User wanted the training curves re-created in wandb. Added
+scripts/replay_to_wandb.py: reads the run's train/ and test/ tfevents and
+re-logs all scalars to a wandb run (epoch as x-axis). Ran in OFFLINE mode (no
+upload, no account/API key needed); the user syncs to their own wandb. wandb/
+added to .gitignore.
+
+### Tasks
+- [x] Install wandb in the `graspnet` env
+- [x] Write `scripts/replay_to_wandb.py` (ruff-clean); ignore `wandb/`
+- [x] Run offline: 28 scalar series, 11,538 steps -> local offline run
+- [x] Commit + PR (stacks on #25)
+- [x] Online upload (after user wandb login): offline `wandb sync` hit a wandb
+      backend 403 (storage.objects.delete); ran WANDB_MODE=online instead ->
+      uploaded cleanly (run bh7gvn8g). Documented the online-preferred path in
+      the script docstring.
