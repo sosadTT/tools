@@ -233,3 +233,16 @@ via checkpoint. Only tracked change: launcher lr_decay passthrough.
 - [x] TRAINING COMPLETE: 18 epochs, exit 0 (Jun 11 11:13 -> Jun 13 17:33,
       ~2.3 days). train loss 2.67->0.54, eval(test_seen) 0.62->0.54.
       checkpoint.tar verified (epoch=18, torch.load OK). GPU freed.
+
+## 12. Training-curve figure
+
+### Background
+User asked for a training-curve figure. Generate a PNG from the run's
+TensorBoard tfevents (train/ and test/) so it can be exported/reported.
+
+### Tasks
+- [x] Install matplotlib in the `graspnet` env
+- [x] Write `scripts/plot_training_curve.py` (reads tfevents, ruff-clean)
+- [x] Generate `runs/full_scratch_realsense/training_curve.png` (gitignored):
+      train overall 2.67->0.48, eval(test_seen) 0.62->0.54, both converge
+- [x] Commit + PR (stacks on #21)
