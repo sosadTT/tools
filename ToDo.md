@@ -227,6 +227,9 @@ via checkpoint. Only tracked change: launcher lr_decay passthrough.
 
 ### Tasks
 - [x] Add `--lr_decay_steps/--lr_decay_rates` passthrough to launcher (bash -n)
-- [ ] Install tmux; preflight gate report; launch on GPU 2 in tmux
-- [ ] Confirm started (log/GPU); report attach instructions + ETA
-- [ ] Commit launcher change + PR (stacks on #19)
+- [x] Install tmux; preflight gate; launch on GPU 2 in tmux 'graspnet'
+- [x] Confirm started (first batches, VRAM ~15.3G, loss 1.07->0.60)
+- [x] Commit launcher change + PR (#21, stacks on #19)
+- [x] TRAINING COMPLETE: 18 epochs, exit 0 (Jun 11 11:13 -> Jun 13 17:33,
+      ~2.3 days). train loss 2.67->0.54, eval(test_seen) 0.62->0.54.
+      checkpoint.tar verified (epoch=18, torch.load OK). GPU freed.
