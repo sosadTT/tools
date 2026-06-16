@@ -275,3 +275,7 @@ added to .gitignore.
 - [x] Write `scripts/replay_to_wandb.py` (ruff-clean); ignore `wandb/`
 - [x] Run offline: 28 scalar series, 11,538 steps -> local offline run
 - [x] Commit + PR (stacks on #25)
+- [x] Online upload (after user wandb login): offline `wandb sync` hit a wandb
+      backend 403 (storage.objects.delete); ran WANDB_MODE=online instead ->
+      uploaded cleanly (run bh7gvn8g). Documented the online-preferred path in
+      the script docstring.

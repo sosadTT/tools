@@ -2,9 +2,15 @@
 
 The training already happened; its scalars live in the ``train/`` and
 ``test/`` tfevents. This re-logs them to a wandb run so the curves can be
-viewed in wandb. Defaults to offline mode (no upload, no account needed);
-sync later with ``wandb sync <run dir>``. For an online run set
-``WANDB_MODE=online`` after ``wandb login``.
+viewed in wandb. Defaults to offline mode (no upload, no account needed).
+
+To get the curves onto wandb.ai, prefer an ONLINE direct run after
+``wandb login``:
+    WANDB_MODE=online python scripts/replay_to_wandb.py
+NOTE: ``wandb sync`` of an OFFLINE run can fail with a wandb backend error
+(HTTP 403 "storage.objects.delete access denied" while overwriting
+wandb-metadata.json). Running online from the start avoids that path and
+uploaded cleanly (verified). Use online mode to populate the dashboard.
 """
 
 import os
