@@ -279,3 +279,17 @@ added to .gitignore.
       backend 403 (storage.objects.delete); ran WANDB_MODE=online instead ->
       uploaded cleanly (run bh7gvn8g). Documented the online-preferred path in
       the script docstring.
+
+## 15. Report-grade train-loss figure
+
+### Background
+User wanted a publication-quality train-loss figure: highest resolution, clear
+large x/y/title labels, and the before/after train-loss values annotated at the
+same large font. Added scripts/plot_train_loss_report.py (reads
+train/loss/overall_loss tfevents).
+
+### Tasks
+- [x] Write `scripts/plot_train_loss_report.py` (ruff-clean): vector PDF +
+      300dpi PNG, TITLE 22 / LABEL 18 / ANNOT 18 fonts, before/after annotated
+- [x] Generate train_loss_report.{pdf,png}: before 2.67 -> after 0.48 over 18ep
+- [x] Commit + PR (stacks on #27)
