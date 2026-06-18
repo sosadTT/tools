@@ -153,3 +153,29 @@ drag-and-dropped zips are excluded from migration.
 - [x] Write `migration/README.md` runbook (image + host artifacts + exclusions)
 - [x] Write `HANDOFF.md` (project-context handoff for another machine/session)
 - [x] Commit + PR (#13, stacks on #11)
+
+## 8. Switch dataset acquisition to HuggingFace mirror + fetch train_3
+
+### Background
+The user found a public HF mirror of GraspNet-1Billion (`saic3d/graspnet`) and
+asked whether downloads could be switched to it, ideally streaming. Survey
+(HF 4 repos, Zenodo, OpenDataLab, Kaggle) found NO streaming-friendly
+(parquet/webdataset) distribution anywhere — all archive-only — and the
+training loader reads per-scene PNG/.mat from disk, so true streaming is not
+possible. The real win is form-free, scriptable, selective, resumable
+downloads. The mirror's zip sizes are byte-identical to our official copies;
+verify once via sha256 before trusting it. Also fetch the missing train_3.zip
+(scenes 0060-0089; peak +41 GB on 377 GB free, floor 80 GB — safe).
+
+### Tasks
+- [x] Install huggingface_hub into the `graspnet` env (0.36.2)
+- [x] Verify mirror: sha256 of our official collision_label.zip AND
+      grasp_label.zip exactly match the HF LFS oids (no download needed)
+- [x] Write `scripts/download_dataset.sh` (disk gate tested, sha256 verify,
+      extract, rm-zip; switched to curl because hf_hub client stalled on
+      this host while direct HTTP runs at full speed)
+- [x] Revise `docs/dataset_download.md` (HF primary, Drive fallback, no
+      streaming note) + HANDOFF.md update
+- [x] Download + extract train_3: sha256 OK (f86adcd0...), scenes 0060-0089
+      extracted -> 60 scenes total, zip removed, disk 349G (floor 80G)
+- [x] Commit + PR (#15, stacks on #13)
