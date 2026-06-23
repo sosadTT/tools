@@ -293,3 +293,20 @@ train/loss/overall_loss tfevents).
       300dpi PNG, TITLE 22 / LABEL 18 / ANNOT 18 fonts, before/after annotated
 - [x] Generate train_loss_report.{pdf,png}: before 2.67 -> after 0.48 over 18ep
 - [x] Commit + PR (stacks on #27)
+
+## 16. Delete extracted dataset zips (disk cleanup)
+
+### Background
+User asked to delete the redundant dataset zips after confirming the extracted
+data is independent of them. Removed 5 zips in /workspace/data/graspnet
+(train_1/2/4.zip, grasp_label.zip, collision_label.zip; 47 GB). Extracted data
+is intact and is what training reads; zips are re-downloadable from the HF
+mirror via scripts/download_dataset.sh. Data is gitignored, so this ToDo entry
+is the only repo record.
+
+### Tasks
+- [x] Verify extracted data independent of zips (130 scenes / 88 grasp / 190
+      collision / 88 tolerance present; already-deleted train_3/test_seen zips
+      proved scenes persist)
+- [x] Delete the 5 zips (47 GB); disk 273G -> 320G; integrity re-verified
+- [x] Record in ToDo + issue (#30) + PR
